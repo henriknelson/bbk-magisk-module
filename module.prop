@@ -1,0 +1,6 @@
+id=bbk-nelshh
+name=bbk for Android
+version=0.3
+versionCode=1
+author=nelshh
+description=A statically built version of bbk_cli for android (aarch64)
