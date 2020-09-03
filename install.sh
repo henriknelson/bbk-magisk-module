@@ -135,9 +135,9 @@ print_modname() {
 on_install() {
   # The following is the default implementation: extract $ZIPFILE/system to $MODPATH
   # Extend/change the logic to whatever you want
-  ui_print "[1/4] Extracting files..";
+  ui_print "[1/5] Extracting files..";
   unzip -o "$ZIPFILE" '*' -d $MODPATH >&2;
-  ui_print "[2/4] Setting permissions..";
+  ui_print "[2/5] Setting permissions..";
 }
 
 # Only some special files require specific permissions
@@ -147,9 +147,20 @@ on_install() {
 set_permissions() {
   # The following is the default rule, DO NOT remove
   set_perm_recursive $MODPATH 0 0 0755 0644;
-  ui_print "[3/4] Installing executable.."
+  ui_print "[3/5] Installing executable.."
   chown 0:0 $MODPATH/system/bin/*;
   chmod 755 $MODPATH/system/bin/*;
 
-  ui_print "[4/4] Installation finished";
+  ui_print "[4/5] Installing to /data/man..";
+  mkdir -p /data/man;
+  cp -r $MODPATH/custom/man/* /data/man/;
+  chmod -R 664 /data/man;
+  chown -R 0:0 /data/man;
+  find /data/man -type d -exec chmod 755 {} \+;
+  find /data/man -type f -exec chmod 664 {} \+;
+  if [[ -s "/system/bin/mandoc" ]]; then
+     makewhatis /data/man;
+  fi
+
+  ui_print "[5/5] Installation finished";
 }
